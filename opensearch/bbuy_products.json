@@ -1,5 +1,130 @@
 {
   "settings": {
     "index.refresh_interval": "5s"
+  },
+  "mappings": {
+    "properties": {
+      "@timestamp": {
+        "type": "date"
+      },
+      "@version": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "productId": {
+        "type": "long"
+      },
+      "sku": {
+        "type": "keyword"
+      },
+      "modelNumber": {
+        "type": "keyword"
+      },
+      "name": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          },
+          "stemmed": {
+            "type": "text",
+            "analyzer": "english"
+          }
+        }
+      },
+      "shortDescription": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          },
+          "stemmed": {
+            "type": "text",
+            "analyzer": "english"
+          }
+        }
+      },
+      "longDescription": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          },
+          "stemmed": {
+            "type": "text",
+            "analyzer": "english"
+          }
+        }
+      },
+      "description": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          },
+          "stemmed": {
+            "type": "text",
+            "analyzer": "english"
+          }
+        }
+      },
+      "image": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "categoryPath": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "type": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "startDate": {
+        "type": "date",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "active": {
+        "type": "boolean"
+      },
+      "regularPrice": {
+        "type": "float"
+      },
+      "salePrice": {
+        "type": "float"
+      },
+      "salesRankShortTerm": {
+        "type": "long"
+      }
+    }
   }
 }
