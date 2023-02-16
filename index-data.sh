@@ -5,7 +5,7 @@ then
   export $(grep -v '^#' .env | xargs)
   ES_CREDS=$ES_USER:$ES_PASS
 else
-  ES_CREDS=admin
+  ES_CREDS=admin:admin
 fi
 usage()
 {

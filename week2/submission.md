@@ -8,7 +8,7 @@ Query Log index: 200,792
 
 ## Improving matching
 
-### Name vs Name Hyphens 
+### Name vs Name Hyphens
 
 i phone
 
@@ -26,10 +26,9 @@ iphone
 | Apple® - Bumper for Apple® iPhone® 4 and iPhone 4S - Blue      |Apple® - Bumper for Apple® iPhone® 4 and iPhone 4S - White|
 | Apple® - Bumper for Apple® iPhone® 4 and iPhone 4S - White     |Apple® - Bumper for Apple® iPhone® 4 and iPhone 4S - Orange|
 
->Q: It’s worth noting here that the rankings here are not identical!  Why is that?
+> Q: It’s worth noting here that the rankings here are not identical!  Why is that?
 
 A: The analyzer has affect the TF/IDF calculations.
- 
 
 iphone
 
@@ -64,37 +63,44 @@ iphone4
 |OtterBox - Reflex Series Case for AppleÂ® iPhoneÂ® 4 and 4S - Black|PhoneMate - 5.8GHz Expandable Analog Cordless Phone|
 
 ### Improving matching via query log
+
 TBD
 
 ## Spelling suggesters
 
-| Input query | Suggestion | Suggester | Notes                                                  |
-|-------------|------------|-----------|--------------------------------------------------------|
-| ipad        | ipod       | term      |                                                        |
+| Input query | Suggestion | Suggester | Notes                                                                                                                                                                                                        |
+|-------------|------------|-----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ipad        | ipod       | term      |                                                                                                                                                                                                              |
+| ipod        | -          | term      | Reason for no suggestion: ipod is more popular than ipad, and suggest_mode=popular. <br/> Documentation says: popular: Only suggest suggestions that occur in more docs than the original suggest text term. |
 | led tv      | lcd        | phrase    ||
-| prance      | princ      | phrase    | stemmed to the root form due to the "english" analyzer |
-|asdef|adder| term      | By default the term suggest uses "max_edits" of 2|
-|1945674|1945 47||
+| prance      | princ      | phrase    | stemmed to the root form due to the "english" analyzer                                                                                                                                                       |
+| asdef       | adder      | term      | By default the term suggest uses "max_edits" of 2                                                                                                                                                            |
+| 1945674     | 1945 47    ||
 
 ## Autocomplete
 
 ### Appl:
+
 ![](ss/autocomplete/Appl-q.png)
 ![](ss/autocomplete/Appl-p.png)
 
 ### Apple i:
+
 ![](ss/autocomplete/Apple-i-q.png)
 ![](ss/autocomplete/Apple-i-p.png)
 
 ### Apple ip:
+
 ![](ss/autocomplete/Apple-ip-q.png)
 ![](ss/autocomplete/Apple-ip-p.png)
 
 ### Apple Mac:
+
 ![](ss/autocomplete/Apple-Mac-q.png)
 ![](ss/autocomplete/Apple-Mac-p.png)
 
 ### LCD:
+
 ![](ss/autocomplete/lcd-q.png)
 ![](ss/autocomplete/lcd-p.png)
 
