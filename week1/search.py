@@ -1,6 +1,7 @@
 #
 # The main search hooks for the Search Flask application.
 #
+import json
 from flask import (
     Blueprint, redirect, render_template, request, url_for
 )
@@ -91,10 +92,10 @@ def query():
     else:
         query_obj = create_query("*", [], sort, sortDir)
 
-    print("query obj: {}".format(query_obj))
+    print("query obj: {}".format(json.dumps(query_obj)))
 
     #### Step 4.b.ii
-    response = None   # TODO: Replace me with an appropriate call to OpenSearch
+    response = opensearch.search(body=query_obj, index="bbuy_products")   # TODO: Replace me with an appropriate call to OpenSearch
     # Postprocess results here if you so desire
 
     #print(response)
@@ -111,11 +112,74 @@ def create_query(user_query, filters, sort="_score", sortDir="desc"):
     query_obj = {
         'size': 10,
         "query": {
-            "match_all": {} # Replace me with a query that both searches and filters
+            "function_score": {
+                "query": {
+                    "query_string": {
+                        "fields": ["name^100", "shortDescription^50", "longDescription^10", "department"],
+
+                        "query": user_query
+                    }
+                },
+                "boost_mode": "multiply",
+                "score_mode": "avg",
+                "functions": [
+                    {
+                        "field_value_factor": {
+                            "field": "salesRankShortTerm",
+                            "factor": 1,
+                            "modifier": "reciprocal",
+                            "missing": 100000000
+                        }
+                    }
+                ]
+            }
         },
         "aggs": {
             #### Step 4.b.i: create the appropriate query and aggregations here
+            "category": {
+                "terms": {
+                    "field": "categoryPath.keyword"
+                }
+            },
+            "department": {
+                "terms": {
+                    "field": "department.keyword"
+                }
+            },
+            "regularPrice": {
+                "range": {
+                    "field": "regularPrice",
+                    "ranges": [
+                        {"to": 50, "key": "Under $50"},
+                        {"from": 50, "to": 100, "key": "$50-$100"},
+                        {"from": 100, "to": 200, "key": "$100-$200"},
+                        {"from": 200, "to": 500, "key": "$200-$500"},
+                        {"from": 500, "key": "Over $500"},
+                    ]
+                }
+            },
+            "missing_images": {
+                "missing": {
+                    "field": "image.keyword"
+                }
+            }
+        },
+        "highlight": {
+            "fields": {
+                "name": {
 
+                },
+                "shortDescription": {},
+                "longDescription": {}
+            }
+        },
+        "sort": {
+            sort: sortDir
+        },
+        "post_filter": {
+            "bool": {
+                "filter": filters
+            }
         }
     }
     return query_obj

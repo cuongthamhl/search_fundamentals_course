@@ -1,6 +1,4 @@
 # From https://github.com/dshvadskiy/search_with_machine_learning_course/blob/main/index_products.py
-import opensearchpy
-import requests
 from lxml import etree
 
 import click
@@ -21,71 +19,80 @@ logging.basicConfig(format='%(levelname)s:%(message)s')
 # NOTE: this is not a complete list of fields.  If you wish to add more, put in the appropriate XPath expression.
 #TODO: is there a way to do this using XPath/XSL Functions so that we don't have to maintain a big list?
 mappings =  [
-            "productId/text()", "productId",
-            "sku/text()", "sku",
-            "name/text()", "name",
-            "type/text()", "type",
-            "startDate/text()", "startDate",
-            "active/text()", "active",
-            "regularPrice/text()", "regularPrice",
-            "salePrice/text()", "salePrice",
-            "artistName/text()", "artistName",
-            "onSale/text()", "onSale",
-            "digital/text()", "digital",
-            "frequentlyPurchasedWith/*/text()", "frequentlyPurchasedWith",# Note the match all here to get the subfields
-            "accessories/*/text()", "accessories",# Note the match all here to get the subfields
-            "relatedProducts/*/text()", "relatedProducts",# Note the match all here to get the subfields
-            "crossSell/text()", "crossSell",
-            "salesRankShortTerm/text()", "salesRankShortTerm",
-            "salesRankMediumTerm/text()", "salesRankMediumTerm",
-            "salesRankLongTerm/text()", "salesRankLongTerm",
-            "bestSellingRank/text()", "bestSellingRank",
-            "url/text()", "url",
-            "categoryPath/*/name/text()", "categoryPath", # Note the match all here to get the subfields
-            "categoryPath/*/id/text()", "categoryPathIds", # Note the match all here to get the subfields
-            "categoryPath/category[last()]/id/text()", "categoryLeaf",
-            "count(categoryPath/*/name)", "categoryPathCount",
-            "customerReviewCount/text()", "customerReviewCount",
-            "customerReviewAverage/text()", "customerReviewAverage",
-            "inStoreAvailability/text()", "inStoreAvailability",
-            "onlineAvailability/text()", "onlineAvailability",
-            "releaseDate/text()", "releaseDate",
-            "shippingCost/text()", "shippingCost",
-            "shortDescription/text()", "shortDescription",
-            "shortDescriptionHtml/text()", "shortDescriptionHtml",
-            "class/text()", "class",
-            "classId/text()", "classId",
-            "subclass/text()", "subclass",
-            "subclassId/text()", "subclassId",
-            "department/text()", "department",
-            "departmentId/text()", "departmentId",
-            "bestBuyItemId/text()", "bestBuyItemId",
-            "description/text()", "description",
-            "manufacturer/text()", "manufacturer",
-            "modelNumber/text()", "modelNumber",
-            "image/text()", "image",
-            "condition/text()", "condition",
-            "inStorePickup/text()", "inStorePickup",
-            "homeDelivery/text()", "homeDelivery",
-            "quantityLimit/text()", "quantityLimit",
-            "color/text()", "color",
-            "depth/text()", "depth",
-            "height/text()", "height",
-            "weight/text()", "weight",
-            "shippingWeight/text()", "shippingWeight",
-            "width/text()", "width",
-            "longDescription/text()", "longDescription",
-            "longDescriptionHtml/text()", "longDescriptionHtml",
-            "features/*/text()", "features" # Note the match all here to get the subfields
+    "productId/text()", "productId",
+    "sku/text()", "sku",
+    "name/text()", "name",
+    "type/text()", "type",
+    "startDate/text()", "startDate",
+    "active/text()", "active",
+    "regularPrice/text()", "regularPrice",
+    "salePrice/text()", "salePrice",
+    "artistName/text()", "artistName",
+    "onSale/text()", "onSale",
+    "digital/text()", "digital",
+    "frequentlyPurchasedWith/*/text()", "frequentlyPurchasedWith",# Note the match all here to get the subfields
+    "accessories/*/text()", "accessories",# Note the match all here to get the subfields
+    "relatedProducts/*/text()", "relatedProducts",# Note the match all here to get the subfields
+    "crossSell/text()", "crossSell",
+    "salesRankShortTerm/text()", "salesRankShortTerm",
+    "salesRankMediumTerm/text()", "salesRankMediumTerm",
+    "salesRankLongTerm/text()", "salesRankLongTerm",
+    "bestSellingRank/text()", "bestSellingRank",
+    "url/text()", "url",
+    "categoryPath/*/name/text()", "categoryPath", # Note the match all here to get the subfields
+    "categoryPath/*/id/text()", "categoryPathIds", # Note the match all here to get the subfields
+    "categoryPath/category[last()]/id/text()", "categoryLeaf",
+    "count(categoryPath/*/name)", "categoryPathCount",
+    "customerReviewCount/text()", "customerReviewCount",
+    "customerReviewAverage/text()", "customerReviewAverage",
+    "inStoreAvailability/text()", "inStoreAvailability",
+    "onlineAvailability/text()", "onlineAvailability",
+    "releaseDate/text()", "releaseDate",
+    "shippingCost/text()", "shippingCost",
+    "shortDescription/text()", "shortDescription",
+    "shortDescriptionHtml/text()", "shortDescriptionHtml",
+    "class/text()", "class",
+    "classId/text()", "classId",
+    "subclass/text()", "subclass",
+    "subclassId/text()", "subclassId",
+    "department/text()", "department",
+    "departmentId/text()", "departmentId",
+    "bestBuyItemId/text()", "bestBuyItemId",
+    "description/text()", "description",
+    "manufacturer/text()", "manufacturer",
+    "modelNumber/text()", "modelNumber",
+    "image/text()", "image",
+    "condition/text()", "condition",
+    "inStorePickup/text()", "inStorePickup",
+    "homeDelivery/text()", "homeDelivery",
+    "quantityLimit/text()", "quantityLimit",
+    "color/text()", "color",
+    "depth/text()", "depth",
+    "height/text()", "height",
+    "weight/text()", "weight",
+    "shippingWeight/text()", "shippingWeight",
+    "width/text()", "width",
+    "longDescription/text()", "longDescription",
+    "longDescriptionHtml/text()", "longDescriptionHtml",
+    "features/*/text()", "features" # Note the match all here to get the subfields
 
-        ]
+]
 
 def get_opensearch():
     host = 'localhost'
     port = 9200
     auth = ('admin', 'admin')
     #### Step 2.a: Create a connection to OpenSearch
-    client = None
+    client = OpenSearch(
+        hosts=[{'host': host, 'port': port}],
+        http_compress=True,  # enables gzip compression for request bodies
+        http_auth=auth,
+        use_ssl=True,
+        verify_certs=False,
+        ssl_assert_hostname=False,
+        ssl_show_warn=False,
+
+    )
     return client
 
 
@@ -97,18 +104,27 @@ def index_file(file, index_name):
     root = tree.getroot()
     children = root.findall("./product")
     docs = []
+    bulk_counter = 0
     for child in children:
         doc = {}
+        bulk_counter += 1
         for idx in range(0, len(mappings), 2):
             xpath_expr = mappings[idx]
             key = mappings[idx + 1]
             doc[key] = child.xpath(xpath_expr)
-        #print(doc)
+        print(doc)
         if 'productId' not in doc or len(doc['productId']) == 0:
             continue
         #### Step 2.b: Create a valid OpenSearch Doc and bulk index 2000 docs at a time
-        the_doc = None
+        the_doc = {'_index': index_name, '_id':doc['sku'][0], '_source' : doc}
         docs.append(the_doc)
+        if bulk_counter >= 200:
+            bulk(client, docs, request_timeout=60)
+            bulk_counter = 0
+            docs = []
+
+    if len(docs) > 0:
+        bulk(client, docs, request_timeout=60)
 
     return docs_indexed
 
